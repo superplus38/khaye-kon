@@ -1,46 +1,284 @@
+
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>خایه‌کن | شبکه اجتماعی خایه‌ها</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>خایه‌کن 💛</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap');
-:root{--bg:#101114;--panel:#1b1a20;--line:#37343d;--yellow:#ffca18;--muted:#aaa6b2;--text:#f5f2f7}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#28232b 0,#101114 45%);color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif}
-button,input,textarea{font:inherit}button{cursor:pointer;border:0}
-.layout{max-width:1400px;margin:auto;padding:22px;display:grid;grid-template-columns:220px minmax(0,1fr) 280px;gap:18px}
-.brand{font-size:28px;font-weight:800;color:var(--yellow);text-align:center;padding:12px}.brand small{display:block;color:#ddd;font-size:12px}
-nav,.card,.post,.composer{background:var(--panel);border:1px solid var(--line);border-radius:18px}
-nav{padding:12px;height:max-content;position:sticky;top:18px}.navitem{padding:13px;border-radius:12px;color:#ddd;margin:4px 0}.navitem.active,.primary{background:var(--yellow);color:#17130a;font-weight:800}.trophy{margin-top:24px;text-align:center;color:var(--yellow);font-size:65px}.trophy p{font-size:14px;color:#eee}
-main{min-width:0}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}.search{background:#1b1a20;border:1px solid var(--line);border-radius:30px;padding:12px 18px;color:white;width:60%}
-.banner{padding:25px;border:1px solid #65521a;border-radius:18px;background:linear-gradient(120deg,#29231a,#17151a);margin-bottom:18px}.banner h1{margin:0;color:var(--yellow);font-size:24px}.banner p{margin:8px 0 0;color:#ddd}
-.composer{padding:18px;margin-bottom:18px}.composer textarea{width:100%;min-height:85px;resize:vertical;background:transparent;border:0;outline:0;color:white}.composebar{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:12px;color:var(--muted)}.primary{padding:10px 20px;border-radius:12px}
-.post{padding:16px;margin-bottom:16px}.posthead{display:flex;align-items:center;gap:10px}.avatar{width:44px;height:44px;border-radius:50%;background:#39313b;display:grid;place-items:center;font-size:23px}.name{font-weight:800}.time{font-size:12px;color:var(--muted)}.postbody{margin:14px 0;line-height:1.9}.reactions{display:flex;flex-wrap:wrap;gap:8px}.react{border:1px solid #5d4a16;background:#28231a;color:#ffe07a;border-radius:12px;padding:9px 12px}.react:hover,.react.selected{background:var(--yellow);color:#19140a}.react small{display:block;color:inherit;opacity:.7;font-size:11px}
-aside .card{padding:16px;margin-bottom:16px}.winner{border-color:#b18b12;background:linear-gradient(145deg,#302817,#1b1a20)}.winner h3{color:var(--yellow);margin:0}.winner .crown{text-align:center;font-size:48px}.winner .who{text-align:center;font-weight:800}.winner .score{text-align:center;color:var(--yellow);font-size:13px}.rankrow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}.rankrow:last-child{border:0}.score{color:var(--yellow);font-weight:800}
-@media(max-width:1050px){.layout{grid-template-columns:180px minmax(0,1fr)}aside{grid-column:2}.layout nav{grid-row:1/3}}
-@media(max-width:700px){.layout{display:flex;flex-direction:column;padding:12px}.top{flex-wrap:wrap}.search{width:100%;order:2}.banner h1{font-size:20px}nav{position:static;display:flex;overflow:auto}.navitem{white-space:nowrap}.trophy{display:none}aside{display:grid;grid-template-columns:1fr 1fr;gap:10px}aside .card{margin:0}.reactions .react{flex:1}}
+*{box-sizing:border-box}
+body{margin:0;background:#090909;color:#eee;font:15px Tahoma;max-width:1000px;padding:15px;margin:auto}
+h1,h2{color:#ffd447}
+h1{font-size:28px}
+small,.muted{color:#999}
+.box{background:#171717;border:1px solid #333;border-radius:16px;padding:16px;margin:12px 0}
+input,textarea{background:#090909;color:white;border:1px solid #444;border-radius:10px;padding:12px;font:inherit;width:100%;margin:5px 0}
+textarea{min-height:90px}
+button{border:0;border-radius:10px;padding:10px 13px;margin:4px;background:#ffd447;color:#171300;font-weight:bold;cursor:pointer}
+button.dark{background:#292929;color:#eee;border:1px solid #444}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row input{flex:1;min-width:150px}
+.post{white-space:pre-wrap;line-height:1.9;margin:14px 0}
+.reactions{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.reactions button{background:#292929;color:#eee;font-size:12px}
+.reactions button.active{background:#51420d;color:#ffd447;border:1px solid #ffd447}
+.count{display:block;font-size:18px}
+.note{color:#aaa;font-size:13px}
+.award{color:#ffd447}
+.hidden{display:none}
+@media(max-width:600px){.reactions{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<div class="layout">
-<nav>
- <div class="brand">🫏 خایه‌کن<small>شبکه اجتماعی خایه‌ها!</small></div>
- <div class="navitem active">🏠 خایه</div><div class="navitem">🏆 جدول رتبه‌بندی</div><div class="navitem">👥 دوستان</div><div class="navitem">👤 پروفایل من</div><div class="navitem">⚙️ تنظیمات</div>
- <div class="trophy">🖕<p>بیا خایه کن<br>تا دنیا به کامت شه!</p>😎</div>
-</nav>
-<main>
- <div class="top"><input class="search" placeholder="جستجو بین رفقا و پست‌ها..."><strong>🔔　ممدخایه‌کن 🐱</strong></div>
- <section class="banner"><h1>یه پست خفن بذار...</h1><p>تا تاریخ به یادت بمونه! 😂</p></section>
- <section class="composer"><textarea id="postText" placeholder="چی به ذهنت رسیده؟ یه چیز پشم‌ریزون بنویس یا عکس بذار..."></textarea><div class="composebar"><span>🖼️ عکس　　😎 میم</span><button class="primary" onclick="publish()">انتشار 🚀</button></div></section>
- <div id="feed">
- <article class="post"><div class="posthead"><div class="avatar">🐱</div><div><div class="name">علی خایه‌چی</div><div class="time">۲ ساعت پیش · 🌐</div></div></div><div class="postbody">وقتی می‌خوای درس بخونی ولی یهو یاد کارای زندگیت می‌افتی:</div><div class="reactions"><button class="react" onclick="react(this)">🖕 یه بار خایه کردم<small>۴۲</small></button><button class="react" onclick="react(this)">✌️ دوبار خایه کردم<small>۱۸</small></button><button class="react" onclick="react(this)">🤟 سه بار خایه کردم<small>۲۷</small></button><button class="react" onclick="react(this)">🖖 چهار بار خایه کردم<small>۶</small></button></div></article>
- <article class="post"><div class="posthead"><div class="avatar">🤡</div><div><div class="name">رضاخایه‌کار</div><div class="time">۴ ساعت پیش · 🌐</div></div></div><div class="postbody">دولت میگه تورم کم میشه...<br>من که هنوز نفهمیدم کدوم سیارست! 🗿</div><div class="reactions"><button class="react" onclick="react(this)">🖕 یه بار خایه کردم<small>۶۷</small></button><button class="react" onclick="react(this)">✌️ دوبار خایه کردم<small>۲۵</small></button><button class="react" onclick="react(this)">🤟 سه بار خایه کردم<small>۲۰</small></button><button class="react" onclick="react(this)">🖖 چهار بار خایه کردم<small>۱۱</small></button></div></article>
- </div>
-</main>
-<aside><section class="card winner"><h3>👑 ابرِ شاهکار</h3><div class="crown">🏆</div><div class="who">ممدخایه‌کن</div><div class="score">با ۴۲۰ امتیاز</div></section><section class="card winner"><h3>⭐ اسطوره</h3><div class="crown">🥇</div><div class="who">علی‌خایه‌چی</div><div class="score">با ۱۸۷ امتیاز</div></section><section class="card"><h3>📊 جدول برترین‌ها</h3><div class="rankrow"><span>👑 ممدخایه‌کن</span><span class="score">۴۲۰</span></div><div class="rankrow"><span>🥈 علی‌خایه‌چی</span><span class="score">۳۷۵</span></div><div class="rankrow"><span>🥉 رضاخایه‌کار</span><span class="score">۳۱۰</span></div></section></aside>
+
+<h1>خایه‌کن 💛</h1>
+<small>اینجا خایه‌کردن هنر است.</small>
+
+<div class="box">
+<h2>🔐 ورود / ثبت‌نام</h2>
+
+<div id="forms">
+<div class="row">
+<input id="email" type="email" placeholder="ایمیل">
+<input id="pass" type="password" placeholder="رمز (حداقل ۶ حرف)">
 </div>
+<input id="uname" placeholder="نام کاربری (برای ثبت‌نام)">
+<button onclick="signup()">ثبت‌نام</button>
+<button onclick="login()">ورود</button>
+</div>
+
+<div id="logged" class="hidden">
+<b id="who"></b>
+<button onclick="logout()">خروج</button>
+</div>
+<p id="authmsg" class="note"></p>
+</div>
+
+<div class="box">
+<h2>✍️ خایه‌ات را ثبت کن</h2>
+<textarea id="txt" maxlength="1200" placeholder="چه شاهکاری خلق کردی؟"></textarea>
+<button onclick="post()">انتشار خایه 🚀</button>
+<span id="postmsg" class="note"></span>
+</div>
+
+<div class="box">
+<h2>🏆 افتخارات</h2>
+<div class="award">👑 اسطوره‌ی امروز: <span id="day">—</span></div>
+<div class="award">🌌 ابر شاهکار هفته: <span id="week">—</span></div>
+</div>
+
+<h2>🔥 خایه‌های تازه <button class="dark" onclick="feed()">↻</button></h2>
+<div id="posts">در حال بارگذاری…</div>
+
+<p class="note">خایه‌کن © محفل رسمی خایه‌کردن‌های بی‌هدف</p>
+
 <script>
-function react(btn){const post=btn.closest('.post');post.querySelectorAll('.react').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
-function publish(){const t=document.getElementById('postText');if(!t.value.trim())return alert('اول یه چیزی خایه کن بنویس 😂');const p=document.createElement('article');p.className='post';p.innerHTML='<div class="posthead"><div class="avatar">😎</div><div><div class="name">ممدخایه‌کن</div><div class="time">همین الان · 🌐</div></div></div><div class="postbody"></div><div class="reactions"><button class="react" onclick="react(this)">🖕 یه بار خایه کردم<small>۰</small></button><button class="react" onclick="react(this)">✌️ دوبار خایه کردم<small>۰</small></button><button class="react" onclick="react(this)">🤟 سه بار خایه کردم<small>۰</small></button><button class="react" onclick="react(this)">🖖 چهار بار خایه کردم<small>۰</small></button></div>';p.querySelector('.postbody').textContent=t.value;document.getElementById('feed').prepend(p);t.value='';}
+const db=supabase.createClient(
+'https://vacnrlqappkdzzjozlux.supabase.co',
+'sb_publishable_hV8tUiRF5BcUtCf0rt-5Uw_xJNLUBqN'
+);
+
+let user=null,profile=null,posts=[],reactions=[],names={};
+
+const labels=[
+'',
+'یه بار خایه کردم',
+'دوبار خایه کردم',
+'سه بار خایه کردم',
+'چهار بار خایه کردم'
+];
+
+const $=x=>document.getElementById(x);
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c])),
+
+num=n=>Number(n||0).toLocaleString('fa-IR');
+
+async function authUI(){
+let {data:{session}}=await db.auth.getSession();
+user=session?.user||null;
+
+if(user){
+let {data:p}=await db.from('profiles')
+.select('*').eq('id',user.id).maybeSingle();
+
+if(!p){
+let un=(user.user_metadata?.username||user.email.split('@')[0]).slice(0,24);
+let r=await db.from('profiles')
+.insert({id:user.id,username:un}).select().single();
+p=r.data;
+}
+
+profile=p;
+$('forms').classList.add('hidden');
+$('logged').classList.remove('hidden');
+$('who').textContent='سلام '+(p?.username||user.email);
+
+}else{
+$('forms').classList.remove('hidden');
+$('logged').classList.add('hidden');
+}
+}
+
+async function signup(){
+let email=$('email').value.trim(),
+password=$('pass').value,
+username=$('uname').value.trim();
+
+if(!email||password.length<6||!username)
+return $('authmsg').textContent='همه فیلدها را کامل کن.';
+
+let {data,error}=await db.auth.signUp({
+email,password,
+options:{data:{username}}
+});
+
+$('authmsg').textContent=error?.message||
+(data.session?'ثبت‌نام شد!':'ثبت‌نام شد؛ ایمیل تأیید را باز کن، بعد وارد شو.');
+
+await authUI();
+await feed();
+}
+
+async function login(){
+let {data,error}=await db.auth.signInWithPassword({
+email:$('email').value.trim(),
+password:$('pass').value
+});
+
+$('authmsg').textContent=error?.message||'ورود موفق!';
+await authUI();
+await feed();
+}
+
+async function logout(){
+await db.auth.signOut();
+await authUI();
+await feed();
+}
+
+async function post(){
+if(!user)return $('postmsg').textContent='اول وارد شو.';
+
+let content=$('txt').value.trim();
+
+if(!content)return $('postmsg').textContent='متن خایه خالیه!';
+
+let {error}=await db.from('posts').insert({
+user_id:user.id,content
+});
+
+$('postmsg').textContent=error?.message||'منتشر شد!';
+
+if(!error){
+$('txt').value='';
+await feed();
+}
+}
+
+async function vote(pid,t){
+if(!user)return alert('برای خایه‌کردن وارد شو!');
+
+let old=reactions.find(r=>r.post_id===pid&&r.user_id===user.id);
+
+let res=old?.reaction_type===t
+?await db.from('reactions').delete().eq('id',old.id)
+:await db.from('reactions').upsert({
+post_id:pid,user_id:user.id,reaction_type:t
+},{onConflict:'post_id,user_id'});
+
+if(res.error)alert(res.error.message);
+await feed();
+}
+
+async function feed(){
+
+let [a,b,c]=await Promise.all([
+db.from('posts').select('id,user_id,content,created_at')
+.order('created_at',{ascending:false}).limit(100),
+
+db.from('reactions')
+.select('id,post_id,user_id,reaction_type,created_at'),
+
+db.from('profiles').select('id,username')
+]);
+
+if(a.error||b.error||c.error){
+$('posts').innerHTML='<div class="box">خطای اتصال: '+
+esc(a.error?.message||b.error?.message||c.error?.message)+'</div>';
+return;
+}
+
+posts=a.data||[];
+reactions=b.data||[];
+names=Object.fromEntries(c.data.map(x=>[x.id,x.username]));
+
+let day=Date.now()-864e5,
+week=Date.now()-7*864e5;
+
+function rank(s){
+let m={};
+
+reactions.forEach(r=>{
+let p=posts.find(x=>x.id===r.post_id);
+
+if(p&&new Date(p.created_at).getTime()>s)
+m[p.user_id]=(m[p.user_id]||0)+1;
+});
+
+return Object.entries(m).sort((x,y)=>y[1]-x[1])[0];
+}
+
+let d=rank(day),w=rank(week);
+
+$('day').textContent=d?
+(names[d[0]]||'عضو')+' · '+num(d[1])+' رأی':
+'هنوز کسی خایه نکرده';
+
+$('week').textContent=w?
+(names[w[0]]||'عضو')+' · '+num(w[1])+' رأی':
+'هنوز شاهکاری ثبت نشده';
+
+if(!posts.length){
+$('posts').innerHTML='<div class="box">محفل هنوز خالیه 👀<br>اولین خایه را ثبت کن!</div>';
+return;
+}
+
+$('posts').innerHTML=posts.map(p=>{
+let rs=reactions.filter(r=>r.post_id===p.id),
+mine=rs.find(r=>r.user_id===user?.id);
+
+return `<div class="box">
+<b>${esc(names[p.user_id]||'عضو محفل')}</b>
+<small>${new Date(p.created_at).toLocaleString('fa-IR')}</small>
+<div class="post">${esc(p.content)}</div>
+<div class="reactions">
+${[1,2,3,4].map(t=>`
+<button class="${mine?.reaction_type===t?'active':''}"
+onclick="vote(${p.id},${t})">
+<span class="count">${num(rs.filter(r=>r.reaction_type===t).length)}</span>
+${labels[t]}
+</button>`).join('')}
+</div>
+<p class="note">${num(rs.length)} خایه</p>
+</div>`;
+}).join('');
+}
+
+db.auth.onAuthStateChange(()=>{
+setTimeout(async()=>{
+await authUI();
+await feed();
+},0);
+});
+
+(async()=>{
+await authUI();
+await feed();
+})();
 </script>
-</body></html>
+</body>
+</html>
