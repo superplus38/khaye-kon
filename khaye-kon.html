@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>خایه‌کن | شبکه اجتماعی خایه‌ها</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap');
+:root{--bg:#101114;--panel:#1b1a20;--line:#37343d;--yellow:#ffca18;--muted:#aaa6b2;--text:#f5f2f7}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#28232b 0,#101114 45%);color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer;border:0}
+.layout{max-width:1400px;margin:auto;padding:22px;display:grid;grid-template-columns:220px minmax(0,1fr) 280px;gap:18px}
+.brand{font-size:28px;font-weight:800;color:var(--yellow);text-align:center;padding:12px}.brand small{display:block;color:#ddd;font-size:12px}
+nav,.card,.post,.composer{background:var(--panel);border:1px solid var(--line);border-radius:18px}
+nav{padding:12px;height:max-content;position:sticky;top:18px}.navitem{padding:13px;border-radius:12px;color:#ddd;margin:4px 0}.navitem.active,.primary{background:var(--yellow);color:#17130a;font-weight:800}.trophy{margin-top:24px;text-align:center;color:var(--yellow);font-size:65px}.trophy p{font-size:14px;color:#eee}
+main{min-width:0}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}.search{background:#1b1a20;border:1px solid var(--line);border-radius:30px;padding:12px 18px;color:white;width:60%}
+.banner{padding:25px;border:1px solid #65521a;border-radius:18px;background:linear-gradient(120deg,#29231a,#17151a);margin-bottom:18px}.banner h1{margin:0;color:var(--yellow);font-size:24px}.banner p{margin:8px 0 0;color:#ddd}
+.composer{padding:18px;margin-bottom:18px}.composer textarea{width:100%;min-height:85px;resize:vertical;background:transparent;border:0;outline:0;color:white}.composebar{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:12px;color:var(--muted)}.primary{padding:10px 20px;border-radius:12px}
+.post{padding:16px;margin-bottom:16px}.posthead{display:flex;align-items:center;gap:10px}.avatar{width:44px;height:44px;border-radius:50%;background:#39313b;display:grid;place-items:center;font-size:23px}.name{font-weight:800}.time{font-size:12px;color:var(--muted)}.postbody{margin:14px 0;line-height:1.9}.reactions{display:flex;flex-wrap:wrap;gap:8px}.react{border:1px solid #5d4a16;background:#28231a;color:#ffe07a;border-radius:12px;padding:9px 12px}.react:hover,.react.selected{background:var(--yellow);color:#19140a}.react small{display:block;color:inherit;opacity:.7;font-size:11px}
+aside .card{padding:16px;margin-bottom:16px}.winner{border-color:#b18b12;background:linear-gradient(145deg,#302817,#1b1a20)}.winner h3{color:var(--yellow);margin:0}.winner .crown{text-align:center;font-size:48px}.winner .who{text-align:center;font-weight:800}.winner .score{text-align:center;color:var(--yellow);font-size:13px}.rankrow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}.rankrow:last-child{border:0}.score{color:var(--yellow);font-weight:800}
+@media(max-width:1050px){.layout{grid-template-columns:180px minmax(0,1fr)}aside{grid-column:2}.layout nav{grid-row:1/3}}
+@media(max-width:700px){.layout{display:flex;flex-direction:column;padding:12px}.top{flex-wrap:wrap}.search{width:100%;order:2}.banner h1{font-size:20px}nav{position:static;display:flex;overflow:auto}.navitem{white-space:nowrap}.trophy{display:none}aside{display:grid;grid-template-columns:1fr 1fr;gap:10px}aside .card{margin:0}.reactions .react{flex:1}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+ <div class="brand">🫏 خایه‌کن<small>شبکه اجتماعی خایه‌ها!</small></div>
+ <div class="navitem active">🏠 خایه</div><div class="navitem">🏆 جدول رتبه‌بندی</div><div class="navitem">👥 دوستان</div><div class="navitem">👤 پروفایل من</div><div class="navitem">⚙️ تنظیمات</div>
+ <div class="trophy">🖕<p>بیا خایه کن<br>تا دنیا به کامت شه!</p>😎</div>
+</nav>
+<main>
+ <div class="top"><input class="search" placeholder="جستجو بین رفقا و پست‌ها..."><strong>🔔　ممدخایه‌کن 🐱</strong></div>
+ <section class="banner"><h1>یه پست خفن بذار...</h1><p>تا تاریخ به یادت بمونه! 😂</p></section>
+ <section class="composer"><textarea id="postText" placeholder="چی به ذهنت رسیده؟ یه چیز پشم‌ریزون بنویس یا عکس بذار..."></textarea><div class="composebar"><span>🖼️ عکس　　😎 میم</span><button class="primary" onclick="publish()">انتشار 🚀</button></div></section>
+ <div id="feed">
+ <article class="post"><div class="posthead"><div class="avatar">🐱</div><div><div class="name">علی خایه‌چی</div><div class="time">۲ ساعت پیش · 🌐</div></div></div><div class="postbody">وقتی می‌خوای درس بخونی ولی یهو یاد کارای زندگیت می‌افتی:</div><div class="reactions"><button class="react" onclick="react(this)">🖕 یه بار خایه کردم<small>۴۲</small></button><button class="react" onclick="react(this)">✌️ دوبار خایه کردم<small>۱۸</small></button><button class="react" onclick="react(this)">🤟 سه بار خایه کردم<small>۲۷</small></button><button class="react" onclick="react(this)">🖖 چهار بار خایه کردم<small>۶</small></button></div></article>
+ <article class="post"><div class="posthead"><div class="avatar">🤡</div><div><div class="name">رضاخایه‌کار</div><div class="time">۴ ساعت پیش · 🌐</div></div></div><div class="postbody">دولت میگه تورم کم میشه...<br>من که هنوز نفهمیدم کدوم سیارست! 🗿</div><div class="reactions"><button class="react" onclick="react(this)">🖕 یه بار خایه کردم<small>۶۷</small></button><button class="react" onclick="react(this)">✌️ دوبار خایه کردم<small>۲۵</small></button><button class="react" onclick="react(this)">🤟 سه بار خایه کردم<small>۲۰</small></button><button class="react" onclick="react(this)">🖖 چهار بار خایه کردم<small>۱۱</small></button></div></article>
+ </div>
+</main>
+<aside><section class="card winner"><h3>👑 ابرِ شاهکار</h3><div class="crown">🏆</div><div class="who">ممدخایه‌کن</div><div class="score">با ۴۲۰ امتیاز</div></section><section class="card winner"><h3>⭐ اسطوره</h3><div class="crown">🥇</div><div class="who">علی‌خایه‌چی</div><div class="score">با ۱۸۷ امتیاز</div></section><section class="card"><h3>📊 جدول برترین‌ها</h3><div class="rankrow"><span>👑 ممدخایه‌کن</span><span class="score">۴۲۰</span></div><div class="rankrow"><span>🥈 علی‌خایه‌چی</span><span class="score">۳۷۵</span></div><div class="rankrow"><span>🥉 رضاخایه‌کار</span><span class="score">۳۱۰</span></div></section></aside>
+</div>
+<script>
+function react(btn){const post=btn.closest('.post');post.querySelectorAll('.react').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
+function publish(){const t=document.getElementById('postText');if(!t.value.trim())return alert('اول یه چیزی خایه کن بنویس 😂');const p=document.createElement('article');p.className='post';p.innerHTML='<div class="posthead"><div class="avatar">😎</div><div><div class="name">ممدخایه‌کن</div><div class="time">همین الان · 🌐</div></div></div><div class="postbody"></div><div class="reactions"><button class="react" onclick="react(this)">🖕 یه بار خایه کردم<small>۰</small></button><button class="react" onclick="react(this)">✌️ دوبار خایه کردم<small>۰</small></button><button class="react" onclick="react(this)">🤟 سه بار خایه کردم<small>۰</small></button><button class="react" onclick="react(this)">🖖 چهار بار خایه کردم<small>۰</small></button></div>';p.querySelector('.postbody').textContent=t.value;document.getElementById('feed').prepend(p);t.value='';}
+</script>
+</body></html>
