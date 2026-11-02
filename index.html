@@ -1,284 +1,399 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>خایه‌کن 💛</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>خایه‌کن | شبکه اجتماعی</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#090909;color:#eee;font:15px Tahoma;max-width:1000px;padding:15px;margin:auto}
-h1,h2{color:#ffd447}
-h1{font-size:28px}
-small,.muted{color:#999}
-.box{background:#171717;border:1px solid #333;border-radius:16px;padding:16px;margin:12px 0}
-input,textarea{background:#090909;color:white;border:1px solid #444;border-radius:10px;padding:12px;font:inherit;width:100%;margin:5px 0}
-textarea{min-height:90px}
-button{border:0;border-radius:10px;padding:10px 13px;margin:4px;background:#ffd447;color:#171300;font-weight:bold;cursor:pointer}
-button.dark{background:#292929;color:#eee;border:1px solid #444}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.row input{flex:1;min-width:150px}
-.post{white-space:pre-wrap;line-height:1.9;margin:14px 0}
-.reactions{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
-.reactions button{background:#292929;color:#eee;font-size:12px}
-.reactions button.active{background:#51420d;color:#ffd447;border:1px solid #ffd447}
-.count{display:block;font-size:18px}
-.note{color:#aaa;font-size:13px}
-.award{color:#ffd447}
-.hidden{display:none}
-@media(max-width:600px){.reactions{grid-template-columns:repeat(2,1fr)}}
+:root{--gold:#ffd700;--bg:#0b0b0b;--card:#151515;--line:#292929}
+body{margin:0;background:var(--bg);color:#eee;font-family:Tahoma,Arial}
+header{text-align:center;padding:20px;background:#111;border-bottom:1px solid var(--line)}
+header h1{color:var(--gold);margin:0}
+header p{color:#999;font-size:12px}
+.container{max-width:720px;margin:auto;padding:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:15px}
+h2{font-size:18px;color:var(--gold);margin-top:0}
+input,textarea{width:100%;background:#080808;color:white;border:1px solid #333;border-radius:9px;padding:12px;margin:7px 0;font-family:inherit}
+textarea{min-height:90px;resize:vertical}
+button{border:0;border-radius:9px;padding:11px 14px;font-family:inherit;cursor:pointer;font-weight:bold}
+.primary{background:var(--gold);color:#111}
+.secondary{background:#292929;color:white}
+button:disabled{opacity:.5}
+.actions,.reactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.small{font-size:12px;color:#999}
+.hidden{display:none!important}
+.post-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px}
+.username{color:var(--gold);font-weight:bold}
+.date{font-size:11px;color:#777}
+.post-content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8}
+.post-image{width:100%;max-height:500px;object-fit:contain;background:#080808;border-radius:10px;margin-top:12px}
+.reaction{background:#262626;color:#eee;font-size:12px}
+.reaction.active{background:#665400;color:var(--gold);outline:1px solid var(--gold)}
+.rankrow{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #252525}
+#status{color:var(--gold);font-size:13px;margin:10px 0}
 </style>
 </head>
 <body>
 
-<h1>خایه‌کن 💛</h1>
-<small>اینجا خایه‌کردن هنر است.</small>
+<header>
+<h1>💛 خایه‌کن</h1>
+<p>هر خایه‌ای ارزش ثبت شدن داره!</p>
+</header>
 
-<div class="box">
-<h2>🔐 ورود / ثبت‌نام</h2>
+<div class="container">
 
-<div id="forms">
-<div class="row">
+<div class="card" id="authCard">
+<h2>ورود / ثبت‌نام</h2>
 <input id="email" type="email" placeholder="ایمیل">
-<input id="pass" type="password" placeholder="رمز (حداقل ۶ حرف)">
+<input id="password" type="password" placeholder="رمز عبور (حداقل ۶ کاراکتر)">
+<input id="username" placeholder="نام کاربری (برای ثبت‌نام)">
+<div class="actions">
+<button class="primary" onclick="signup()">ثبت‌نام</button>
+<button class="secondary" onclick="login()">ورود</button>
 </div>
-<input id="uname" placeholder="نام کاربری (برای ثبت‌نام)">
-<button onclick="signup()">ثبت‌نام</button>
-<button onclick="login()">ورود</button>
-</div>
-
-<div id="logged" class="hidden">
-<b id="who"></b>
-<button onclick="logout()">خروج</button>
-</div>
-<p id="authmsg" class="note"></p>
+<p class="small">اگر تأیید ایمیل فعال باشد، ایمیلت رو تأیید کن.</p>
 </div>
 
-<div class="box">
-<h2>✍️ خایه‌ات را ثبت کن</h2>
-<textarea id="txt" maxlength="1200" placeholder="چه شاهکاری خلق کردی؟"></textarea>
-<button onclick="post()">انتشار خایه 🚀</button>
-<span id="postmsg" class="note"></span>
+<div class="card hidden" id="userCard">
+سلام <span class="username" id="currentUsername"></span> 👋
+<div class="actions"><button class="secondary" onclick="logout()">خروج</button></div>
 </div>
 
-<div class="box">
-<h2>🏆 افتخارات</h2>
-<div class="award">👑 اسطوره‌ی امروز: <span id="day">—</span></div>
-<div class="award">🌌 ابر شاهکار هفته: <span id="week">—</span></div>
+<div id="status"></div>
+
+<div class="card hidden" id="composer">
+<h2>ثبت خایه جدید 🥚</h2>
+<textarea id="content" maxlength="1000" placeholder="چی می‌خوای بگی؟"></textarea>
+<label class="small">📷 انتخاب عکس (حداکثر ۵ مگابایت)</label>
+<input type="file" id="imageFile" accept="image/jpeg,image/png,image/webp,image/gif">
+<img id="preview" class="post-image hidden">
+<div class="actions">
+<button class="primary" id="publishBtn" onclick="publishPost()">انتشار پست</button>
+</div>
 </div>
 
-<h2>🔥 خایه‌های تازه <button class="dark" onclick="feed()">↻</button></h2>
-<div id="posts">در حال بارگذاری…</div>
+<div class="card">
+<h2>🏆 رتبه‌بندی</h2>
+<div id="rankings" class="small">در حال دریافت...</div>
+</div>
 
-<p class="note">خایه‌کن © محفل رسمی خایه‌کردن‌های بی‌هدف</p>
+<h2>📢 پست‌ها</h2>
+<div id="feed"><div class="card">در حال بارگذاری...</div></div>
+
+</div>
 
 <script>
-const db=supabase.createClient(
-'https://vacnrlqappkdzzjozlux.supabase.co',
-'sb_publishable_hV8tUiRF5BcUtCf0rt-5Uw_xJNLUBqN'
-);
+const SUPABASE_URL="https://vacnrlqappkdzzjozlux.supabase.co";
+const SUPABASE_KEY="sb_publishable_hV8tUiRF5BcUtCf0rt-5Uw_xJNLUBqN";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let user=null,profile=null,posts=[],reactions=[],names={};
+let currentUser=null,currentUsername=null;
 
-const labels=[
-'',
-'یه بار خایه کردم',
-'دوبار خایه کردم',
-'سه بار خایه کردم',
-'چهار بار خایه کردم'
+const reactionNames=[
+"یه بار خایه کردم",
+"دوبار خایه کردم",
+"سه بار خایه کردم",
+"چهار بار خایه کردم"
 ];
 
-const $=x=>document.getElementById(x);
+function message(t){document.getElementById("status").textContent=t}
 
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
-'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[c])),
-
-num=n=>Number(n||0).toLocaleString('fa-IR');
-
-async function authUI(){
-let {data:{session}}=await db.auth.getSession();
-user=session?.user||null;
-
-if(user){
-let {data:p}=await db.from('profiles')
-.select('*').eq('id',user.id).maybeSingle();
-
-if(!p){
-let un=(user.user_metadata?.username||user.email.split('@')[0]).slice(0,24);
-let r=await db.from('profiles')
-.insert({id:user.id,username:un}).select().single();
-p=r.data;
+function esc(s){
+return String(s??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
 }
 
-profile=p;
-$('forms').classList.add('hidden');
-$('logged').classList.remove('hidden');
-$('who').textContent='سلام '+(p?.username||user.email);
-
-}else{
-$('forms').classList.remove('hidden');
-$('logged').classList.add('hidden');
-}
-}
+function dateText(d){return new Date(d).toLocaleString("fa-IR")}
 
 async function signup(){
-let email=$('email').value.trim(),
-password=$('pass').value,
-username=$('uname').value.trim();
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
+const username=document.getElementById("username").value.trim();
 
-if(!email||password.length<6||!username)
-return $('authmsg').textContent='همه فیلدها را کامل کن.';
+if(!email||!password||!username){message("همه فیلدها رو پر کن.");return}
+if(password.length<6){message("رمز حداقل ۶ کاراکتر باشه.");return}
 
-let {data,error}=await db.auth.signUp({
-email,password,
-options:{data:{username}}
+message("در حال ثبت‌نام...");
+const {data,error}=await sb.auth.signUp({
+email,password,options:{data:{username}}
 });
 
-$('authmsg').textContent=error?.message||
-(data.session?'ثبت‌نام شد!':'ثبت‌نام شد؛ ایمیل تأیید را باز کن، بعد وارد شو.');
+if(error){message(error.message);return}
 
-await authUI();
-await feed();
+if(data.user&&data.session){
+await createProfile(data.user,username);
+await loadUser();
+message("ثبت‌نام موفق بود!");
+}else{
+message("ثبت‌نام انجام شد؛ ایمیلت رو تأیید کن و بعد وارد شو.");
+}
 }
 
 async function login(){
-let {data,error}=await db.auth.signInWithPassword({
-email:$('email').value.trim(),
-password:$('pass').value
-});
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
+message("در حال ورود...");
 
-$('authmsg').textContent=error?.message||'ورود موفق!';
-await authUI();
-await feed();
+const {error}=await sb.auth.signInWithPassword({email,password});
+if(error){message(error.message);return}
+
+await loadUser();
+message("وارد شدی!");
+await loadFeed();
+await loadRankings();
+}
+
+async function createProfile(user,username){
+const {error}=await sb.from("profiles").upsert({id:user.id,username});
+if(error)message("خطای پروفایل: "+error.message);
+}
+
+async function loadUser(){
+const {data:{user}}=await sb.auth.getUser();
+currentUser=user;
+
+if(!user){
+currentUsername=null;
+document.getElementById("authCard").classList.remove("hidden");
+document.getElementById("userCard").classList.add("hidden");
+document.getElementById("composer").classList.add("hidden");
+return;
+}
+
+const {data:profile}=await sb.from("profiles")
+.select("username").eq("id",user.id).maybeSingle();
+
+currentUsername=profile?.username||user.user_metadata?.username||"کاربر";
+
+document.getElementById("currentUsername").textContent=currentUsername;
+document.getElementById("authCard").classList.add("hidden");
+document.getElementById("userCard").classList.remove("hidden");
+document.getElementById("composer").classList.remove("hidden");
 }
 
 async function logout(){
-await db.auth.signOut();
-await authUI();
-await feed();
+await sb.auth.signOut();
+currentUser=null;
+await loadUser();
+await loadFeed();
+message("خارج شدی.");
 }
 
-async function post(){
-if(!user)return $('postmsg').textContent='اول وارد شو.';
+document.getElementById("imageFile").addEventListener("change",function(){
+const file=this.files[0];
+const preview=document.getElementById("preview");
 
-let content=$('txt').value.trim();
-
-if(!content)return $('postmsg').textContent='متن خایه خالیه!';
-
-let {error}=await db.from('posts').insert({
-user_id:user.id,content
-});
-
-$('postmsg').textContent=error?.message||'منتشر شد!';
-
-if(!error){
-$('txt').value='';
-await feed();
-}
-}
-
-async function vote(pid,t){
-if(!user)return alert('برای خایه‌کردن وارد شو!');
-
-let old=reactions.find(r=>r.post_id===pid&&r.user_id===user.id);
-
-let res=old?.reaction_type===t
-?await db.from('reactions').delete().eq('id',old.id)
-:await db.from('reactions').upsert({
-post_id:pid,user_id:user.id,reaction_type:t
-},{onConflict:'post_id,user_id'});
-
-if(res.error)alert(res.error.message);
-await feed();
-}
-
-async function feed(){
-
-let [a,b,c]=await Promise.all([
-db.from('posts').select('id,user_id,content,created_at')
-.order('created_at',{ascending:false}).limit(100),
-
-db.from('reactions')
-.select('id,post_id,user_id,reaction_type,created_at'),
-
-db.from('profiles').select('id,username')
-]);
-
-if(a.error||b.error||c.error){
-$('posts').innerHTML='<div class="box">خطای اتصال: '+
-esc(a.error?.message||b.error?.message||c.error?.message)+'</div>';
+if(!file){preview.classList.add("hidden");return}
+if(file.size>5*1024*1024){
+message("حجم عکس بیشتر از ۵ مگابایته.");
+this.value="";
+preview.classList.add("hidden");
 return;
 }
 
-posts=a.data||[];
-reactions=b.data||[];
-names=Object.fromEntries(c.data.map(x=>[x.id,x.username]));
-
-let day=Date.now()-864e5,
-week=Date.now()-7*864e5;
-
-function rank(s){
-let m={};
-
-reactions.forEach(r=>{
-let p=posts.find(x=>x.id===r.post_id);
-
-if(p&&new Date(p.created_at).getTime()>s)
-m[p.user_id]=(m[p.user_id]||0)+1;
+preview.src=URL.createObjectURL(file);
+preview.classList.remove("hidden");
 });
 
-return Object.entries(m).sort((x,y)=>y[1]-x[1])[0];
+async function publishPost(){
+if(!currentUser){message("اول وارد شو.");return}
+
+const content=document.getElementById("content").value.trim();
+const file=document.getElementById("imageFile").files[0];
+
+if(!content&&!file){message("متن یا عکس وارد کن.");return}
+
+const btn=document.getElementById("publishBtn");
+btn.disabled=true;
+message("در حال انتشار...");
+
+try{
+let image_url=null;
+
+if(file){
+const ext=file.name.split(".").pop().toLowerCase();
+const path=currentUser.id+"/"+Date.now()+"."+ext;
+
+const {error:uploadError}=await sb.storage.from("post-images")
+.upload(path,file,{upsert:false,contentType:file.type});
+
+if(uploadError)throw uploadError;
+
+const {data}=sb.storage.from("post-images").getPublicUrl(path);
+image_url=data.publicUrl;
 }
 
-let d=rank(day),w=rank(week);
+const {error}=await sb.from("posts").insert({
+user_id:currentUser.id,
+content:content||"",
+image_url
+});
 
-$('day').textContent=d?
-(names[d[0]]||'عضو')+' · '+num(d[1])+' رأی':
-'هنوز کسی خایه نکرده';
+if(error)throw error;
 
-$('week').textContent=w?
-(names[w[0]]||'عضو')+' · '+num(w[1])+' رأی':
-'هنوز شاهکاری ثبت نشده';
+document.getElementById("content").value="";
+document.getElementById("imageFile").value="";
+document.getElementById("preview").classList.add("hidden");
 
-if(!posts.length){
-$('posts').innerHTML='<div class="box">محفل هنوز خالیه 👀<br>اولین خایه را ثبت کن!</div>';
+message("پست منتشر شد! 🥚");
+await loadFeed();
+await loadRankings();
+
+}catch(e){
+message("خطا: "+e.message);
+}finally{
+btn.disabled=false;
+}
+}
+
+async function loadFeed(){
+const feed=document.getElementById("feed");
+
+const {data:posts,error}=await sb.from("posts")
+.select("*").order("created_at",{ascending:false}).limit(50);
+
+if(error){
+feed.innerHTML='<div class="card">خطا: '+esc(error.message)+'</div>';
 return;
 }
 
-$('posts').innerHTML=posts.map(p=>{
-let rs=reactions.filter(r=>r.post_id===p.id),
-mine=rs.find(r=>r.user_id===user?.id);
+if(!posts?.length){
+feed.innerHTML='<div class="card">هنوز پستی وجود نداره.</div>';
+return;
+}
 
-return `<div class="box">
-<b>${esc(names[p.user_id]||'عضو محفل')}</b>
-<small>${new Date(p.created_at).toLocaleString('fa-IR')}</small>
-<div class="post">${esc(p.content)}</div>
-<div class="reactions">
-${[1,2,3,4].map(t=>`
-<button class="${mine?.reaction_type===t?'active':''}"
-onclick="vote(${p.id},${t})">
-<span class="count">${num(rs.filter(r=>r.reaction_type===t).length)}</span>
-${labels[t]}
-</button>`).join('')}
+const ids=[...new Set(posts.map(p=>p.user_id))];
+const {data:profiles}=await sb.from("profiles").select("id,username").in("id",ids);
+const names={};
+(profiles||[]).forEach(p=>names[p.id]=p.username);
+
+const postIds=posts.map(p=>p.id);
+const {data:reactions}=await sb.from("reactions")
+.select("post_id,user_id,reaction_type").in("post_id",postIds);
+
+const rmap={};
+(reactions||[]).forEach(r=>{
+if(!rmap[r.post_id])rmap[r.post_id]=[];
+rmap[r.post_id].push(r);
+});
+
+feed.innerHTML=posts.map(post=>{
+const rs=rmap[post.id]||[];
+const mine=rs.find(r=>r.user_id===currentUser?.id);
+
+const buttons=reactionNames.map((name,i)=>{
+const type=i+1;
+const count=rs.filter(r=>r.reaction_type===type).length;
+return `<button class="reaction ${mine?.reaction_type===type?'active':''}"
+onclick="react(${post.id},${type})">${name} (${count})</button>`;
+}).join("");
+
+return `<div class="card">
+<div class="post-head">
+<span class="username">${esc(names[post.user_id]||"ناشناس")}</span>
+<span class="date">${dateText(post.created_at)}</span>
 </div>
-<p class="note">${num(rs.length)} خایه</p>
+${post.content?`<div class="post-content">${esc(post.content)}</div>`:""}
+${post.image_url?`<img class="post-image" src="${esc(post.image_url)}" loading="lazy">`:""}
+<div class="reactions">${buttons}</div>
+${currentUser&&post.user_id===currentUser.id?
+`<div class="actions"><button class="secondary" onclick="deletePost(${post.id})">حذف پست</button></div>`:""}
 </div>`;
-}).join('');
+}).join("");
 }
 
-db.auth.onAuthStateChange(()=>{
-setTimeout(async()=>{
-await authUI();
-await feed();
-},0);
+async function react(postId,type){
+if(!currentUser){message("برای ری‌اکت باید وارد بشی.");return}
+
+const {data:old}=await sb.from("reactions")
+.select("id,reaction_type").eq("post_id",postId)
+.eq("user_id",currentUser.id).maybeSingle();
+
+let result;
+if(old&&old.reaction_type===type){
+result=await sb.from("reactions").delete().eq("id",old.id);
+}else if(old){
+result=await sb.from("reactions").update({reaction_type:type}).eq("id",old.id);
+}else{
+result=await sb.from("reactions").insert({
+post_id:postId,user_id:currentUser.id,reaction_type:type
+});
+}
+
+if(result.error){message(result.error.message);return}
+await loadFeed();
+await loadRankings();
+}
+
+async function deletePost(id){
+if(!confirm("پست حذف بشه؟"))return;
+const {error}=await sb.from("posts").delete().eq("id",id);
+if(error){message(error.message);return}
+message("پست حذف شد.");
+await loadFeed();
+await loadRankings();
+}
+
+async function loadRankings(){
+const box=document.getElementById("rankings");
+
+const {data:posts}=await sb.from("posts").select("user_id,created_at");
+const {data:reactions}=await sb.from("reactions").select("user_id,created_at");
+const {data:profiles}=await sb.from("profiles").select("id,username");
+
+const users={};
+(profiles||[]).forEach(p=>users[p.id]=p.username);
+
+const today=new Date();today.setHours(0,0,0,0);
+const week=new Date();week.setDate(week.getDate()-6);week.setHours(0,0,0,0);
+
+const scores={};
+function add(uid){if(!scores[uid])scores[uid]={today:0,week:0}}
+
+(posts||[]).forEach(p=>{
+add(p.user_id);
+if(new Date(p.created_at)>=today)scores[p.user_id].today++;
+if(new Date(p.created_at)>=week)scores[p.user_id].week++;
 });
 
-(async()=>{
-await authUI();
-await feed();
-})();
+(reactions||[]).forEach(r=>{
+add(r.user_id);
+if(new Date(r.created_at)>=today)scores[r.user_id].today++;
+if(new Date(r.created_at)>=week)scores[r.user_id].week++;
+});
+
+const list=Object.entries(scores);
+const daily=[...list].sort((a,b)=>b[1].today-a[1].today)[0];
+const weekly=[...list].sort((a,b)=>b[1].week-a[1].week)[0];
+
+box.innerHTML=`
+<div class="rankrow"><span>🥇 اسطوره امروز</span>
+<b class="username">${daily?esc(users[daily[0]]||"ناشناس"):"—"}</b></div>
+<div class="rankrow"><span>👑 ابر شاهکار هفته</span>
+<b class="username">${weekly?esc(users[weekly[0]]||"ناشناس"):"—"}</b></div>`;
+}
+
+async function init(){
+await loadUser();
+await loadFeed();
+await loadRankings();
+}
+
+sb.auth.onAuthStateChange(async(event,session)=>{
+if(event==="SIGNED_IN"||event==="SIGNED_OUT"){
+currentUser=session?.user||null;
+await loadUser();
+await loadFeed();
+await loadRankings();
+}
+});
+
+init();
 </script>
 </body>
 </html>
